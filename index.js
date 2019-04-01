@@ -1,6 +1,40 @@
 const Word = require("./Word");
+const categories = require("./wordArrays");
 
 const inquirer = require("inquirer");
+
+let wordArr = [];
+
+function start() {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "choice",
+        message: "CHOOSE A CATEGORY:",
+        choices: categories.descriptions.concat("ALL OF THE ABOVE", "SURPRISE ME"),
+        default: categories.descriptions[Math.floor(Math.random() * categories.descriptions.length)]
+      }
+    ]).then(function(inquirerResponse) {
+      let wordArrDescription = inquirerResponse.choice;
+      for (let index = 0; index < categories.descriptions.length; index++) {
+        if (categories.descriptions[index] === wordArrDescription) {
+          wordArr = categories[index];
+        }
+      }
+      if (wordArrDescription === "ALL OF THE ABOVE") {
+        for (let index = 0; index < categories.descriptions.length; index++) {
+          for (let j = 0; j < categories[index].length; j++) {
+            wordArr.push(categories[index][j]);
+          }
+        }
+      }
+      if (wordArrDescription === "SURPRISE ME") {
+        wordArr = categories[Math.floor(Math.random() * categories.length)];
+      }
+      game(wordArr[Math.floor(Math.random() * wordArr.length)]);
+    });
+}
 
 function game(wordToGuess) {
   if (wordToGuess.lettersGuessed.length > 0) {
@@ -57,34 +91,4 @@ function game(wordToGuess) {
     });
 }
 
-wordArr = [
-new Word(characters = [j,a,v,a,s,c,r,i,p,t]),
-new Word(characters = [n,o,d,e,".",j,s]),
-new Word(characters = [c,l,a,s,s]),
-new Word(characters = [l,e,t,t,e,r]),
-new Word(characters = [c,o,n,s,t,r,u,c,t,o,r]),
-new Word(characters = [f,u,n,c,t,i,o,n]),
-new Word(characters = [r,e,t,u,r,n]),
-new Word(characters = [m,o,d,u,l,e,".",e,x,p,o,r,t,s]),
-new Word(characters = [c,o,n,s,t,a,n,t]),
-new Word(characters = [r,e,q,u,i,r,e]),
-new Word(characters = [a,l,p,h,a,b,e,t]),
-new Word(characters = [a,r,r,a,y]),
-new Word(characters = [i,n,d,e,x]),
-new Word(characters = [l,e,n,g,t,h]),
-new Word(characters = [l,o,w,e,r,c,a,s,e]),
-new Word(characters = [e,v,a,l,u,a,t,e]),
-new Word(characters = [c,h,a,r,a,c,t,e,r,s]),
-new Word(characters = [u,n,d,e,f,i,n,e,d]),
-new Word(characters = [c,o,n,c,a,t,e,n,a,t,i,o,n]),
-new Word(characters = [s,t,r,i,n,g]),
-new Word(characters = [i,n,c,l,u,d,e,s]),
-new Word(characters = [c,o,n,s,o,l,e,".",l,o,g]),
-new Word(characters = [i,n,q,u,i,r,e,r]),
-new Word(characters = [j,o,i,n]),
-new Word(characters = [p,r,o,m,p,t]),
-new Word(characters = [m,a,t,h,".",f,l,o,o,r]),
-new Word(characters = [m,a,t,h,".",r,a,n,d,o,m])
-];
-
-game(wordArr[Math.floor(Math.random() * wordArr.length)]);
+start();
